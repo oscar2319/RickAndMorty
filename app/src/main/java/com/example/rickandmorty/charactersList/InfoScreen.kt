@@ -1,4 +1,4 @@
-package com.example.rickandmorty.presentation.charactersList
+package com.example.rickandmorty.charactersList
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

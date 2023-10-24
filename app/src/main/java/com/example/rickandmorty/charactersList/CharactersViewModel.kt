@@ -1,30 +1,54 @@
-package com.example.rickandmorty.presentation.charactersList
+package com.example.rickandmorty.charactersList
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.os.Build
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rickandmorty.R
-import com.example.rickandmorty.presentation.model.CharactersDetails
+import com.example.rickandmorty.charactersList.data.network.CharactersService
+import com.example.rickandmorty.charactersList.data.network.response.CharacterInfo
+import com.example.rickandmorty.charactersList.data.repository.CharactersRepository
+import com.example.rickandmorty.charactersList.domain.GetCharactersUseCase
+import com.example.rickandmorty.charactersList.model.CharactersDetails
+import com.example.rickandmorty.utils.Mapper
+import kotlinx.coroutines.launch
 
-class CharactersViewModel(): ViewModel() {
+class CharactersViewModel : ViewModel() {
     private val _charactersList = MutableLiveData<List<CharactersDetails>>()
         val charactersList: LiveData<List<CharactersDetails>>
             get() = _charactersList
 
 
-    fun showCharacters(){
+    private val getCharactersUseCase = GetCharactersUseCase()
+    private val charactersRepository = CharactersRepository()
 
+    fun showCharacters(context: Context){
+
+        val isNetwork =  isInternetAvailable(context)
+        if(isNetwork){
+            //from service
+            viewModelScope.launch {
+                getCharactersUseCase(2){
+                    if (it != null) {
+                        _charactersList.postValue(Mapper.characterInfoToCharacterDetails(it.results))
+                    }
+                }
+            }
+
+
+        }else{
+            //from database
+            //getCharactersUseCase( pageNumber = 2, isNetworkAvailable = false)
+        }
     }
-    fun getCharacters(): List<CharactersDetails>{
-        return listOf(
-            CharactersDetails(R.drawable.rick, "Rick", "human", "Alive"),
-            CharactersDetails(R.drawable.rick, "Morty", "ijcbqai", "Alive")
-        )
+    private fun getCharacters() {
     }
 
     private fun isInternetAvailable(context: Context): Boolean {
