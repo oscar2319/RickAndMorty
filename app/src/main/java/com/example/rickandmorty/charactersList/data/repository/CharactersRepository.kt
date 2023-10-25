@@ -5,10 +5,9 @@ import com.example.rickandmorty.charactersList.data.network.CharactersService
 import com.example.rickandmorty.charactersList.data.network.response.CharacterInfo
 import com.example.rickandmorty.charactersList.data.network.response.CharactersResponse
 import com.example.rickandmorty.utils.Mapper
+import javax.inject.Inject
 
-class CharactersRepository {
-
-    private val apiService = CharactersService()
+class CharactersRepository @Inject constructor(private val apiService: CharactersService) {
 
     fun getCharacters(currentPage: Int, onResult: (CharactersResponse?) -> Unit){
         apiService.getCharacters(currentPage,onResult)

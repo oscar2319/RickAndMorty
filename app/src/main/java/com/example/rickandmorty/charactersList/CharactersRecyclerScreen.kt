@@ -20,14 +20,12 @@ fun CharactersRecyclerScreen(navController: NavController, charactersViewModel: 
     charactersViewModel.showCharacters(context = context)
     val listOfCharacters: List<CharactersDetails> by charactersViewModel.charactersList.observeAsState(initial = emptyList())
 
-    Log.d("TAG-1", "listOfCharacters $listOfCharacters")
-
     Box(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.Cyan)
     ){
 
-        CharacterRecyclerView(characterList = listOfCharacters)
+        CharacterRecyclerView(characterList = listOfCharacters, charactersViewModel)
     }
 }
 

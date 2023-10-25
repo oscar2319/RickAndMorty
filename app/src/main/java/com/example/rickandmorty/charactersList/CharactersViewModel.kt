@@ -18,26 +18,36 @@ import com.example.rickandmorty.charactersList.data.repository.CharactersReposit
 import com.example.rickandmorty.charactersList.domain.GetCharactersUseCase
 import com.example.rickandmorty.charactersList.model.CharactersDetails
 import com.example.rickandmorty.utils.Mapper
+import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-class CharactersViewModel : ViewModel() {
-    private val _charactersList = MutableLiveData<List<CharactersDetails>>()
+@HiltViewModel
+class CharactersViewModel @Inject constructor(
+    private val getCharactersUseCase: GetCharactersUseCase
+    ) : ViewModel() {
+    private val _charactersList = MutableLiveData<List<CharactersDetails>>().apply {
+        value = emptyList()
+    }
         val charactersList: LiveData<List<CharactersDetails>>
             get() = _charactersList
 
 
-    private val getCharactersUseCase = GetCharactersUseCase()
-    private val charactersRepository = CharactersRepository()
 
+    var counter = 1
     fun showCharacters(context: Context){
 
         val isNetwork =  isInternetAvailable(context)
+
         if(isNetwork){
             //from service
             viewModelScope.launch {
-                getCharactersUseCase(2){
+                getCharactersUseCase(counter){
                     if (it != null) {
-                        _charactersList.postValue(Mapper.characterInfoToCharacterDetails(it.results))
+                        val list = _charactersList.value?.union(Mapper.characterInfoToCharacterDetails(it.results))
+                        _charactersList.postValue(list?.toList())
+                        counter++
                     }
                 }
             }
@@ -46,9 +56,8 @@ class CharactersViewModel : ViewModel() {
         }else{
             //from database
             //getCharactersUseCase( pageNumber = 2, isNetworkAvailable = false)
+            counter++
         }
-    }
-    private fun getCharacters() {
     }
 
     private fun isInternetAvailable(context: Context): Boolean {
