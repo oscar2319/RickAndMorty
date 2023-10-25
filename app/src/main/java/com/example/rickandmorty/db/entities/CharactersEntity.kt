@@ -21,16 +21,12 @@ data class CharactersEntity(
     val type: String,
     @ColumnInfo(name = "gender")
     val gender: String,
-    @ColumnInfo(name = "origin")
-    val origin: Location,
-    @ColumnInfo(name = "location")
-    val location: Location,
     @ColumnInfo(name = "image")
     val image: String,
-    @ColumnInfo(name = "episode")
-    val episode: List<String>,
     @ColumnInfo(name = "url")
     val url: String,
     @ColumnInfo(name = "created")
-    val created: String
+    val created: String,
+    @ColumnInfo(name = "page")
+    val page: Int
 )

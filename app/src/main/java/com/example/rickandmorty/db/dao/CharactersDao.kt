@@ -3,6 +3,7 @@ package com.example.rickandmorty.db.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.rickandmorty.db.entities.CharactersEntity
@@ -20,6 +21,9 @@ interface CharactersDao {
 
     @Insert
     fun addResult(autResponseEntity: CharactersEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(characterList: List<CharactersEntity>)
 
     @Update
     fun updateResult(autResponseEntity: CharactersEntity)
